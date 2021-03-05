@@ -41,36 +41,54 @@ module.exports={
                 res.json({ error_code: 1, err_desc: "No file passed" });
                 return;
             }
-            let imageUrl = req.file.filename;
-            let newItem=new AluminumItem();
-            newItem.AI_Seri = req.body.AI_Seri;
-            newItem.AI_MasterNo = req.body.AI_MasterNo;
-            newItem.AI_ArabicName = req.body.AI_ArabicName
-            newItem.AI_HebrewName = req.body.AI_HebrewName;
-            newItem.AI_PictureNo = req.file.filename
-           
-            newItem.save((err,document)=>{
-                if(err){
-                    return res.status(500).send({
-                        message:err
-                    })
-                }else {
-                    return res.send({
-                        message:true
-                    })
-                }
-            });
-        
+            let nextCode = 1 ;
+            AluminumItem.findOne({}, (err,item)=>{
+                if(err) return res.status(500).send({err : err})
+                else if(item) nextCode = item.AI_Seri + 1;
+                let newItem=new AluminumItem();
+                newItem.AI_Seri = nextCode;
+                newItem.AI_MasterNo = req.body.AI_MasterNo;
+                newItem.AI_ArabicName = req.body.AI_ArabicName
+                newItem.AI_HebrewName = req.body.AI_HebrewName;
+                newItem.AI_PictureNo = req.file.filename
+            
+                newItem.save((err,document)=>{
+                    if(err){
+                        return res.status(500).send({
+                            message:err
+                        })
+                    }else {
+                        return res.send({
+                            message:true
+                        })
+                    }
+                });
+    
+            }).sort({ AI_Seri: -1 });
+            
         })
     },
 
     editAluminumItem:(req,res)=>{
-        var updatedItem={}
-        updatedItem.AI_MasterNo = req.body.AI_MasterNo;
-        updatedItem.AI_ArabicName=req.body.AI_ArabicName
-        updatedItem.AI_HebrewName=req.body.AI_HebrewName
-        
-        AluminumItem.findByIdAndUpdate(req.body['_id'],updatedItem,{new: true},
+        upload(req, res, function(err) {
+            console.log("boooooodyxx", req.body);
+            if (err) {
+                res.status(422).json({ error_code: 1, err_desc: err });
+                return;
+            }
+            /** Multer gives us file info in req.file object */
+            if (!req.file) {
+                res.json({ error_code: 1, err_desc: "No file passed" });
+                return;
+            }
+            
+            var updatedItem={}
+            updatedItem.AI_MasterNo = req.body.AI_MasterNo;
+            updatedItem.AI_ArabicName=req.body.AI_ArabicName;
+            updatedItem.AI_HebrewName=req.body.AI_HebrewName;
+            updatedItem.AI_PictureNo = req.file.filename;
+
+            AluminumItem.findByIdAndUpdate(req.body['_id'],updatedItem,{new: true},
             (err,item)=>{
                 if(err){
                     return res.status(500).send({
@@ -87,6 +105,10 @@ module.exports={
                     })
                 }
             })
+
+        });    
+        
+        
     },
 
     getAll:(req,res)=>{

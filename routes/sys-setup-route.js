@@ -77,7 +77,7 @@ router.post('/categoryTypes/getOneCategoryTypeById',async function(req, res, nex
 });
 
 
-/**************   product materials routes           ********** */
+/**************   Factory name routes           ********** */
 
 router.post('/factoryNames/addFactoryName',async function(req, res, next) {
     await(sysSetupController.addFactoryName(req, res));

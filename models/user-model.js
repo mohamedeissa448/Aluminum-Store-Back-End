@@ -3,12 +3,17 @@ var passportLocalMongoose = require("passport-local-mongoose");
 var passwordHash = require("password-hash");
 
 const userSchema = new mongoose.Schema({
-  User_Code: Number,
-  User_Name: String,
-  User_Password: String,
+  User_Code      : Number,
+  User_Name      : String,
+  userHebName    : String,
+  userAddress    : String,
+  userTelephone  : String,
+  userFax        :String,
+  User_Password  : String,
   User_DisplayName: String,
   User_Permissions: [String],
-  User_IsActive: {type: Boolean,
+  User_IsActive: {
+    type: Boolean,
     default: true
   },
  

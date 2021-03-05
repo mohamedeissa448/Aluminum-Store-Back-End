@@ -332,7 +332,6 @@ module.exports={
     /***********Factory Name ************* */
     addFactoryName:(req,res)=>{
         const newFactoryName=new FactoryName();
-        newFactoryName.AFN_Seri=req.body.AFN_Seri;
         newFactoryName.AFN_Desc=req.body.AFN_Desc;
         newFactoryName.save((err,document)=>{
             if(err){
@@ -349,7 +348,6 @@ module.exports={
 
     editFactoryNameById:(req,res)=>{
         var updatedFactoryName={}
-        updatedFactoryName.AFN_Seri=req.body.AFN_Seri;
         updatedFactoryName.AFN_Desc=req.body.AFN_Desc;
 
         FactoryName.findByIdAndUpdate(req.body['_id'],updatedFactoryName,{new: true},

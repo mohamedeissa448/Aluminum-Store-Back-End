@@ -2,7 +2,6 @@ var mongoose = require('mongoose');
 
 var FactoryNameSchema = mongoose.Schema({
     
-    AFN_Seri     	                    : Number,
     AFN_Desc                            : String,
    
 });
