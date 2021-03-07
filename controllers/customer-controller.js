@@ -120,6 +120,29 @@ module.exports={
     }
     ,    
     
+    changeCustomerStatus : (req,res)=>{
+        let updatedCustomer={};
+        updatedCustomer.Customer_Status=req.body.Customer_Status;
+        var newvalues={
+            $set:updatedCustomer
+        }
+            Customer.findByIdAndUpdate(req.body['_id'],newvalues,{new: true},
+            (err,customer)=>{
+                if(err){
+                    return res.send({
+                        message:err
+                    })
+                }else if(customer) {
+                    return res.send({
+                        message:true
+                    })
+                }else{
+                    return res.send({
+                        message:"updated Customer is null"
+                    })
+                }
+            })
+    },
     getAllOrdersForAspecificCustomer : (req,res)=>{
       Order.find({ Order_Customer : req.body.customerId })
       .populate({path:"Order_Customer",select:"Customer_Code Customer_Name Customer_ShippingAddress Address"})
