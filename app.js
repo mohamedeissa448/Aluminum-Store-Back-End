@@ -13,6 +13,8 @@ const authenticate = require("./authenticate");
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var aluminumItemsRouter=require('./routes/aluminum-items-route');
+var aluminumFactoryItemsRouter=require('./routes/aluminum-factory-items-route');
+
 var suppliersRouter=require('./routes/suppliers-route');
 var suppliersPaymentsRouter=require("./routes/suppliers-payments-route")
 var customersRouter=require('./routes/customers-route');
@@ -29,7 +31,6 @@ var productTransactionRouter = require ("./routes/product-transaction-route");
 var shippingCompaniesRouter = require("./routes/shipping-company-routes");
 var affiliateSellersRouter = require("./routes/affiliate-Seller-routes");
 var ordersRouter = require("./routes/order-routes");
-var bromoCodeRouter = require("./routes/bromo-code-route");
 
 var app = express();
 
@@ -55,6 +56,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/sys-setup', sysSetupRouter);
 app.use('/aluminumItem', aluminumItemsRouter);
+app.use('/aluminumFactoryItem', aluminumFactoryItemsRouter);
 
 app.use('/suppliers', suppliersRouter);
 app.use('/suppliersPayments', suppliersPaymentsRouter);
@@ -71,7 +73,6 @@ app.use('/productTransaction', productTransactionRouter);
 app.use('/shippingCompanies', shippingCompaniesRouter);
 app.use('/affiliateSellers', affiliateSellersRouter);
 app.use('/orders', ordersRouter);
-app.use('/bromoCode', bromoCodeRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

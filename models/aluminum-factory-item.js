@@ -1,14 +1,21 @@
 var mongoose = require('mongoose');
 
-var BromoCode =new mongoose.Schema({
+var FactroryItem =new mongoose.Schema({
     
     AFI_Seri                           : Number        ,
-    BromoCode_Start_Date               : Date, // selected by user
-    BromoCode_End_Date                 : Date, // selected by user
-    BromoCode_Usage_Times              : Number, // number of times to use, 0 means unlimited times of use
-    BromoCode_Discount                 : Number,
-    BromoCode_Description              : String,
+    AFI_AFN_Seri                       : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'lut_factory_name'
+    },
+    AFI_OriginalNumber                 : String, 
+    AFI_ACT_Seri                       : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'lut_category_type'
+    },
+    AFI_AI_Seri                        : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref  : 'lut_aluminum_item'
+    },
 });
 
-BromoCode = module.exports = mongoose.model('ogt_bromoCode',BromoCode);
-
+FactroryItem = module.exports = mongoose.model('aluminum_factory_item',FactroryItem);

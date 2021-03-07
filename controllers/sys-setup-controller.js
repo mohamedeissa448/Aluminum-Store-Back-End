@@ -193,19 +193,19 @@ module.exports={
             updatedType.AT_Desc=req.body.AT_Desc;
             
             Type.findByIdAndUpdate(req.body['_id'],updatedType,{new: true},
-            (err,color)=>{
+            (err,type)=>{
                 if(err){
                     return res.status(500).send({
                         message:err
                     })
-                }else if(color) {
+                }else if(type) {
                     return res.send({
                         message:true,
-                        data:{ newColor:color }
+                        data:{ newtype:type }
                     })
                 }else{
                     return res.send({
-                        message:"updated color is null"
+                        message:"updated type is null"
                     })
                 }
             })
@@ -293,7 +293,7 @@ module.exports={
 
     getAllCategoryTypes:(req,res)=>{
         CategoryType.find({})
-        .populate({path : "ACT_ACat_Seri" ,select :"ACat_ACN_Seri ACat_Desc"})
+        .populate({path : "ACT_ACat_Seri" ,select :"ACat_ACN_Seri ACat_Desc", populate : {path: 'ACat_ACN_Seri',model:'lut_code-number'}})
         .populate({path : "ACT_AT_Seri" ,select :"AT_Number AT_Desc"})
 
         .exec((err,categoryTypes)=>{
