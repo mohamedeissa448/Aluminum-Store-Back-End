@@ -79,7 +79,6 @@ module.exports = {
       newUser.userHebName = request.body.userHebName;
       newUser.userAddress    = request.body.userAddress
       newUser.userTelephone  = request.body.userTelephone
-      newUser.userFax        = request.body.userFax
       newUser.User_Password = passwordHash.generate(request.body.User_Password);
       newUser.User_DisplayName = request.body.User_DisplayName;
       newUser.User_Permissions = [];
@@ -157,9 +156,12 @@ module.exports = {
 		    if (err){
 		    	res.send({message: 'Error'});
 		    }
-	        if (permision) {
+	      else  if (permision) {
             res.send(permision.System_Setting_ConfigValue);
-			} 
+      } 
+      else{
+        res.send('no permissions inserted yet')
+      }
 		});
 	},
   /*

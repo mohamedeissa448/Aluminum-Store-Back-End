@@ -5,37 +5,26 @@ var CustomerSchema = mongoose.Schema({
     
     Customer_Code     	         : Number, // auto increment 
     Customer_Name                : String,
-    Customer_CreatedSysDate      : { // automatic record the insert date
-        type:Date,
-        default:    new Date(),
-    },
-    Address          : AddressSchema,
-    Customer_BillingAddress      : AddressSchema,
-    Customer_BillingAddressLog   : [{
-        ChangingDate     : {
-           type: Date,
-           default : new Date(),
-        },
-        Address          : AddressSchema
-    }],
-    Customer_ShippingAddress      :AddressSchema,
-    Customer_ShippingAddressLog   : [{
-        ChangingDate     : {
-            type: Date,
-            default : new Date(),
-         },
-         Address          : AddressSchema
-    }],
-    Customer_Status               : Number ,// 1 = active , 0 = Risky , 2 = blocked
+    Customer_Email              : String,
+    Customer_Phone              : String,
+    Customer_Address            : String,
+    Customer_Password          : String ,
+    Customer_Status               : {
+        type : Number,
+        default : 1    // 1 = active , 0 = Risky , 2 = blocked
+    } ,
     Customer_Num_Of_Orders :  {
         type : Number ,
         default : 0
+    },
+    Customer_CreatedSysDate      : { // automatic record the insert date
+        type:Date,
+        default:    new Date(),
     }
-    
 });
 
 
-const customer = mongoose.model('ogt_customer', CustomerSchema);
+const customer = mongoose.model('customer', CustomerSchema);
 module.exports = customer;
 module.exports.getLastCode = function(callback) {
     customer.findOne({}, callback).sort({ Customer_Code: -1 });

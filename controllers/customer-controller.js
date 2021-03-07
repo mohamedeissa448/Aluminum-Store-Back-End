@@ -1,5 +1,9 @@
 var Customer=require("../models/customer-model");
 var Order =require("../models/order-model");
+var passwordHash = require("password-hash");
+const jwt = require("jsonwebtoken");
+const passport = require("passport");
+var passwordHash = require("password-hash");
 
 module.exports={
     addCustomer:(req,res)=>{
@@ -10,11 +14,12 @@ module.exports={
           function InsertIntoCustomer(NextCode) {
             let newCustomer=new Customer();
             newCustomer.Customer_Code=NextCode
-            newCustomer.Customer_Name=req.body.Customer_Name
-            newCustomer.Address=req.body.Address
+            newCustomer.Customer_Name=req.body.Customer_Name;
+            newCustomer.Customer_Email=req.body.Customer_Email;
+            newCustomer.Customer_Phone=req.body.Customer_Phone;
+            newCustomer.Customer_Address=req.body.Customer_Address;
+            newCustomer.Customer_Password=passwordHash.generate(req.body.Customer_Password);
             newCustomer.Customer_Status=req.body.Customer_Status
-            newCustomer.Customer_BillingAddress=req.body.Customer_BillingAddress
-            newCustomer.Customer_ShippingAddress=req.body.Customer_ShippingAddress
             newCustomer.save((err,document)=>{
                 if(err){
                     return res.send({
@@ -23,7 +28,7 @@ module.exports={
                     })
                 }else {
                     return res.send({
-                        status:true,
+                        message:true,
                         CustomerID:document._id
                     })
                 }
@@ -35,8 +40,9 @@ module.exports={
   editCustomer:(req,res)=>{
        let updatedCustomer={};
         updatedCustomer.Customer_Name=req.body.Customer_Name;
-        updatedCustomer.Address=req.body.Address;
-        updatedCustomer.Customer_Status=req.body.Customer_Status
+        updatedCustomer.Customer_Email=req.body.Customer_Name;
+        updatedCustomer.Customer_Phone=req.body.Customer_Name;
+        updatedCustomer.Customer_Address=req.body.Customer_Address;
         var newvalues={
             $set:updatedCustomer
         }
@@ -111,139 +117,8 @@ module.exports={
             }
 
         })
-    },
-    /***********************Customer Billing Address */
-    getCustomerBillingAddressByID:(req,res)=>{
-    Customer.findById( req.body._id)
-      .select("Customer_BillingAddress")
-      .exec(function(err, customer) {
-        if (err) {
-          return res.send({
-            message: err
-          });
-        } else if (customer) {
-          res.json({
-            message:true,
-            data:{ customer:customer }
-        });
-        } else {
-          res.send("not customer");
-        }
-      });
-    },
-
-    addBillingAddressToCustomerByCustomerId:(req,res)=>{
-        Customer.findById(req.body._id)
-        .exec(function(err,document){
-            if (err) {
-                return res.send({
-                  message: err
-                });
-              } else if (document) {
-                if(document.Customer_BillingAddress){
-                    document.Customer_BillingAddressLog.push({
-                        Address: document.Customer_BillingAddress
-                    });
-                }
-                document.Customer_BillingAddress = req.body.Customer_BillingAddress;
-                    document.save(function(err,updatedDocument){
-                        if (err) {
-                            return res.send({
-                              message: err
-                            });
-                          } else if (updatedDocument) {
-                            res.json({
-                              message:true,
-                              data:{ customer:updatedDocument }
-                          });
-                          } else {
-                            res.send("not customer");
-                          }
-                    })
-              }else {
-                res.send("not customer");
-              }
-        })
-    },
-
-    /***********************Customer Shipping Address */
-    getCustomerShippingAddressByID:(req,res)=>{
-        Customer.findById( req.body._id)
-          .select("Customer_ShippingAddress")
-          .exec(function(err, customer) {
-            if (err) {
-              return res.send({
-                message: err
-              });
-            } else if (customer) {
-              res.json({
-                message:true,
-                data:{ customer:customer }
-            });
-            } else {
-              res.send("not customer");
-            }
-          });
-        },
-    
-        addShippingAddressToCustomerByCustomerId:(req,res)=>{
-            Customer.findById(req.body._id)
-            .exec(function(err,document){
-                if (err) {
-                    return res.send({
-                      message: err
-                    });
-                  } else if (document) {
-                    if(document.Customer_ShippingAddress){
-                        document.Customer_ShippingAddressLog.push({
-                            Address: document.Customer_ShippingAddress
-                        });
-                    }
-                    document.Customer_ShippingAddress = req.body.Customer_ShippingAddress;
-                        document.save(function(err,updatedDocument){
-                            if (err) {
-                                return res.send({
-                                  message: err
-                                });
-                              } else if (updatedDocument) {
-                                res.json({
-                                  message:true,
-                                  data:{ customer:updatedDocument }
-                              });
-                              } else {
-                                res.send("not customer");
-                              }
-                        })
-                  }else {
-                    res.send("not customer");
-                  }
-            })
-        },
-    
-    changeCustomerStatus : (req,res)=>{
-      let updatedCustomer={};
-        updatedCustomer.Customer_Status=req.body.Customer_Status
-        var newvalues={
-            $set:updatedCustomer
-        }
-            Customer.findByIdAndUpdate(req.body['_id'],newvalues,{new: true},
-            (err,customer)=>{
-                if(err){
-                    return res.send({
-                        message:err
-                    })
-                }else if(customer) {
-                    return res.send({
-                        message:true,
-                        data:{ newCustomer:customer }
-                    })
-                }else{
-                    return res.send({
-                        message:"updated Customer is null"
-                    })
-                }
-            })
-    } ,
+    }
+    ,    
     
     getAllOrdersForAspecificCustomer : (req,res)=>{
       Order.find({ Order_Customer : req.body.customerId })
