@@ -1,10 +1,11 @@
 var mongoose = require('mongoose');
-var AddressSchema = require('./general-schemas/address-schema'); 
+var passwordHash = require("password-hash");
 
 var CustomerSchema = mongoose.Schema({
     
     Customer_Code     	         : Number, // auto increment 
     Customer_Name                : String,
+    Customer_DisplayName         : String,
     Customer_Email              : String,
     Customer_Phone              : String,
     Customer_Address            : String,
@@ -23,6 +24,17 @@ var CustomerSchema = mongoose.Schema({
     }
 });
 
+CustomerSchema.methods.verifyPassword = function(password) {
+    if (passwordHash.verify(password, this.Customer_Password) == 1) 
+        return 1;
+    else return 0;
+  };
+  
+  CustomerSchema.methods.updatePassword = function(password) {
+    this.Customer_Password = passwordHash.generate(password);
+    this.save();
+  };
+  
 
 const customer = mongoose.model('customer', CustomerSchema);
 module.exports = customer;

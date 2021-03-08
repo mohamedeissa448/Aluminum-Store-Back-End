@@ -21,6 +21,27 @@ router.get('/getAllActive',async function(req, res, next) {
 router.post('/getOneById',async function(req, res, next) {
     await(customerController.getOneById(req, res));
 });
+
+router.post('/login',async function(req, res, next) {
+    await(customerController.login(req, res));
+});
+
+router.post("/changeMyPassword",async function(req, res) {
+    await(customerController.changeMyPassword(req, res));
+
+});
+router.post("/changePassword",async function(req, res) {
+    await(customerController.changePassword(req, res));
+  
+});
+router.post("/changeDisplayName",async function(req, res) {
+  await(customerController.changeDisplayName(req, res));
+});
+
+router.post("/changeEmail",async function(req, res) {
+  await(customerController.changeEmail(req, res));
+
+});
 /************************customer billing address */
 router.post('/getCustomerBillingAddressByID',async function(req, res, next) {
     await(customerController.getCustomerBillingAddressByID(req, res));

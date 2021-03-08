@@ -15,6 +15,7 @@ module.exports={
             let newCustomer=new Customer();
             newCustomer.Customer_Code=NextCode
             newCustomer.Customer_Name=req.body.Customer_Name;
+            newCustomer.Customer_DisplayName= req.body.Customer_DisplayName;
             newCustomer.Customer_Email=req.body.Customer_Email;
             newCustomer.Customer_Phone=req.body.Customer_Phone;
             newCustomer.Customer_Address=req.body.Customer_Address;
@@ -40,8 +41,9 @@ module.exports={
   editCustomer:(req,res)=>{
        let updatedCustomer={};
         updatedCustomer.Customer_Name=req.body.Customer_Name;
-        updatedCustomer.Customer_Email=req.body.Customer_Name;
-        updatedCustomer.Customer_Phone=req.body.Customer_Name;
+        updatedCustomer.Customer_DisplayName= req.body.Customer_DisplayName;
+        updatedCustomer.Customer_Email=req.body.Customer_Email;
+        updatedCustomer.Customer_Phone=req.body.Customer_Phone;
         updatedCustomer.Customer_Address=req.body.Customer_Address;
         var newvalues={
             $set:updatedCustomer
@@ -143,6 +145,84 @@ module.exports={
                 }
             })
     },
+
+    login: function(req, res, next) {
+        console.log("login start")
+          passport.authenticate("customerLogin", function(err, user, info) {
+            if (err) {
+              return next(err);
+            }
+            if (!user) {
+              console.log("No such user")
+              return res.send({status: false});
+            }
+            req.logIn(user, function(err) {
+              if (err) {
+                return next(info);
+              }
+              else{
+                return res.send(user);
+              }
+              
+            });
+          })(req, res, next);
+    },
+
+    changeMyPassword: function(request, res) {
+        Customer.findById( request.body._id , function(err, user) {
+          console.log("body",request.body._id)
+          console.log("xx",1+1)
+          if (err) {
+            res.send({ message: err });
+          } else if (user) {
+            if (!user.verifyPassword(request.body.old_password)) {
+
+              res.send({ message: false });
+            } else {
+              user.updatePassword(request.body.new_password);
+
+              res.send({ message: true });
+            }
+          } else {
+            res.send({ message: "Error" });
+          }
+        });
+      },
+  
+      changeDisplayName: function(req, res) {
+        var updated ={
+          $set:{
+            Customer_DisplayName :req.body.Customer_DisplayName
+          }
+        }
+        Customer.findByIdAndUpdate(req.body.id ,updated, function(err, user) {
+          if (err) {
+            res.send({ message: err });
+          } else if (user) {
+            res.send({ message: true });
+          } else {
+            res.send({ message: "unknown Error" });
+          }
+        });
+      },
+      
+      changeEmail: function(req, res) {
+        var updated ={
+          $set:{
+            Customer_Email :req.body.Customer_Email
+          }
+        }
+        Customer.findByIdAndUpdate(req.body.id ,updated, function(err, user) {
+          if (err) {
+            res.send({ message: err });
+          } else if (user) {
+            res.send({ message: true });
+          } else {
+            res.send({ message: "unknown Error" });
+          }
+        });
+      },
+
     getAllOrdersForAspecificCustomer : (req,res)=>{
       Order.find({ Order_Customer : req.body.customerId })
       .populate({path:"Order_Customer",select:"Customer_Code Customer_Name Customer_ShippingAddress Address"})

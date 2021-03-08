@@ -4,7 +4,7 @@ var LocalStrategy    = require('passport-local').Strategy;
 
 
 var User       = require('./models/user-model');
-var affiliateSeller = require('./models/affiliate-seller-model')
+var Customer = require('./models/customer-model');
 module.exports = function(passport) {
 
     // Maintaining persistent login sessions
@@ -38,14 +38,14 @@ module.exports = function(passport) {
         });
 
     }));
-    //for affiliate user log in 
-    passport.use('affiliateSellerLogin', new LocalStrategy({
-        usernameField : 'AffiliateSeller_Email',
+    //for customer log in 
+    passport.use('customerLogin', new LocalStrategy({
+        usernameField : 'Customer_Email',
         passReqToCallback : true 
     },
-    function(req, user_name, password, done) {
+    function(req, Customer_Email, password, done) {
        process.nextTick(function() {
-            affiliateSeller.findOne({ 'AffiliateSeller_Email' :  user_name }, function(err, user) {
+            Customer.findOne({ 'Customer_Email' :  Customer_Email }, function(err, user) {
                 if (err){ return done(err);}
                 if (!user)
                   return done(null,false,{status:false,message:'user is not exist'});
