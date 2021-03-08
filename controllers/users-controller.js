@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 var passwordHash = require("password-hash");
-const config = require("../config");
+const {jwtSecretKey} = require("../config");
 const authenticate = require("../authenticate");
 const User = require("../models/user-model");
 const System_Setting  = require('../models/system_setting');
@@ -20,8 +20,9 @@ module.exports = {
           return next(info);
         }
         else{
-          user.User_Password = '';
-          return res.send(user);
+          const token = jwt.sign(user.toJSON(), jwtSecretKey);
+          return res.send({token});
+
         }
         
       });

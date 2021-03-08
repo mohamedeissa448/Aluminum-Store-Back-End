@@ -4,6 +4,7 @@ var passwordHash = require("password-hash");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 var passwordHash = require("password-hash");
+const  {jwtSecretKey} = require('../config');
 
 module.exports={
     addCustomer:(req,res)=>{
@@ -157,11 +158,16 @@ module.exports={
               return res.send({status: false});
             }
             req.logIn(user, function(err) {
+                console.log("err:",err)
               if (err) {
                 return next(info);
               }
               else{
-                return res.send(user);
+                  console.log("user",user)
+                  console.log("jwtSecretKey",jwtSecretKey)
+                  const customerToken = jwt.sign(user.toJSON(), jwtSecretKey);
+
+                return res.send({customerToken});
               }
               
             });
